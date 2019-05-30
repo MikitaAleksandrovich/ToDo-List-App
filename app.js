@@ -31,18 +31,24 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems, err => {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log('Successfully saved default items!');
-    }
-});
-
 
 app.get('/', (req, res) => {
 
-    res.render('list', { listTitle: "Today", newListItems: items }); 
+    Item.find({}, (err, foundItems) => {
+        
+        if (foundItems.length === 0) {
+            Item.insertMany(defaultItems, err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Successfully saved default items!');
+                }   
+            });
+            res.redirect('/');
+        } else {
+            res.render('list', { listTitle: "Today", newListItems: foundItems });
+        }
+    });
 
 });
 

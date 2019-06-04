@@ -15,7 +15,7 @@ const itemsSchema = {
     name: String
 };
 
-const Item = mongoose.model("Item", itemsSchema);
+const Item = mongoose.model('Item', itemsSchema);
 
 const item1 = new Item({
     name: 'Welcome to your todolist!'
@@ -61,10 +61,22 @@ app.post('/', (req, res) => {
     });
 
     item.save();
-
     res.redirect('/');
+});
+
+
+app.post('/delete', (req, res) => {
+    const checkedItemId = req.body.checkbox;
+
+        Item.findByIdAndRemove(checkedItemId, err => {
+            if(!err) {
+                console.log('Succesfully deleted checked item!');
+                res.redirect('/');
+            }
+        });
 
 });
+
 
 app.get('/about', (req, res) => {
     res.render('about');

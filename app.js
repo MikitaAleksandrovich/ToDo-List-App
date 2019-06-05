@@ -15,6 +15,13 @@ const itemsSchema = {
     name: String
 };
 
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+};
+
+const List = mongoose.model('List', listSchema);
+
 const Item = mongoose.model('Item', itemsSchema);
 
 const item1 = new Item({
@@ -47,6 +54,28 @@ app.get('/', (req, res) => {
             res.redirect('/');
         } else {
             res.render('list', { listTitle: "Today", newListItems: foundItems });
+        }
+    });
+});
+
+app.get('/:customListName', (req, res) => {
+    const customListName =  req.params.customListName;
+
+
+    List.findOne({name: customListName}, (err, foundList) => {
+        if(!err) {
+            if(!foundList) {
+                // Create a new list
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                });
+                list.save(); 
+                res.redirect('/' + customListName);
+            } else {
+                // Show an existin list
+                res.render('list', { listTitle: foundList.name, newListItems: foundList.items });
+            } 
         }
     });
 

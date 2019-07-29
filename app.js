@@ -39,6 +39,13 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+const post = new Post ({
+    title: req.body.title,
+    content: req.body.postBody
+});
+
+post.save();
+
 
 app.get('/', (req, res) => {
 
@@ -144,3 +151,5 @@ app.listen(port);
 app.listen(port, () => {
     console.log('Server started successfully');
 });
+
+
